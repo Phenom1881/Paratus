@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Paratus — Hero Preview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  body{font-family:'Inter',sans-serif;background:#0E0E12}
+
+  /* ---------- surface switcher (lives above the themed page) ---------- */
+  .switcher{
+    position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:14px;
+    padding:11px clamp(16px,4vw,40px);background:#0B0B0F;border-bottom:1px solid #23232C;
+  }
+  .switcher .lbl{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#7A7A86}
+  .seg{display:inline-flex;background:#191920;border:1px solid #2A2A33;border-radius:8px;padding:3px}
+  .seg button{font-family:'Inter',sans-serif;font-weight:600;font-size:13px;color:#A8A8B3;background:transparent;border:none;padding:7px 16px;border-radius:6px;cursor:pointer}
+  .seg button[aria-pressed="true"]{background:#6D4AFF;color:#fff}
+  .seg button:focus-visible{outline:2px solid #C9F24E;outline-offset:2px}
+
+  /* ---------- themed page ---------- */
+  .page{
+    --bg:#16161C;--panel:#1C1C24;--panel-line:#2A2A33;
+    --headline:#FFFFFF;--body:#A8A8B3;--muted:#73737E;
+    --violet:#6D4AFF;--violet-ink:#8A6BFF;--lime:#C9F24E;
+    --track:#2A2A33;--btn-text:#16161C;
+    --glow:radial-gradient(900px 380px at 82% -8%,rgba(109,74,255,.22),transparent 60%);
+    background:var(--bg);background-image:var(--glow);
+    color:var(--body);transition:background-color .35s ease;
+    min-height:100vh;padding-bottom:64px;
+  }
+  .page[data-surface="light"]{
+    --bg:#F8F7FC;--panel:#FFFFFF;--panel-line:#ECEAF6;
+    --headline:#16161C;--body:#56565F;--muted:#8A8A95;
+    --violet:#6D4AFF;--violet-ink:#5128D6;--lime:#C9F24E;
+    --track:#ECEAF6;--btn-text:#16161C;
+    --glow:radial-gradient(900px 420px at 85% -10%,rgba(109,74,255,.10),transparent 60%);
+  }
+
+  /* alert strip */
+  .alert{
+    display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+    padding:9px clamp(16px,4vw,40px);font-size:13px;
+    background:rgba(109,74,255,.12);border-bottom:1px solid var(--panel-line);color:var(--headline);
+  }
+  .page[data-surface="light"] .alert{background:#F0ECFF}
+  .alert .badge{font-family:'Space Mono',monospace;font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;background:var(--lime);color:#16161C;padding:3px 8px;border-radius:4px}
+  .alert .where{color:var(--body)}
+  .alert a{margin-left:auto;color:var(--violet-ink);font-weight:600;text-decoration:none;white-space:nowrap}
+  .alert a:hover{text-decoration:underline}
+
+  /* nav */
+  .nav{display:flex;align-items:center;gap:12px;padding:18px clamp(16px,4vw,40px)}
+  .brand{display:flex;align-items:center;gap:9px}
+  .brand svg{width:28px;height:28px}
+  .brand .name{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:19px;letter-spacing:-.01em;color:var(--headline)}
+  .links{margin-left:auto;display:flex;gap:26px}
+  .links a{font-size:14px;color:var(--body);text-decoration:none}
+  .links a:hover{color:var(--headline)}
+  .nav .navcta{font-family:'Inter',sans-serif;font-weight:600;font-size:14px;background:var(--lime);color:var(--btn-text);border:none;padding:9px 17px;border-radius:8px;cursor:pointer}
+  @media(max-width:760px){.links{display:none}.nav .navcta{margin-left:auto}}
+
+  /* hero */
+  .hero{
+    display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(28px,5vw,64px);
+    align-items:center;max-width:1120px;margin:0 auto;
+    padding:clamp(24px,5vw,52px) clamp(16px,4vw,40px) clamp(40px,6vw,72px);
+  }
+  @media(max-width:880px){.hero{grid-template-columns:1fr;gap:36px}}
+
+  .eyebrow{display:inline-flex;align-items:center;gap:8px;font-family:'Space Mono',monospace;font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--violet-ink);margin-bottom:20px}
+  .eyebrow .pip{width:7px;height:7px;border-radius:50%;background:var(--lime);box-shadow:0 0 0 3px rgba(201,242,78,.18)}
+  h1{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(34px,6.4vw,60px);line-height:1.02;letter-spacing:-.025em;color:var(--headline);max-width:14ch}
+  .sub{margin-top:20px;font-size:clamp(15px,2.2vw,18px);line-height:1.55;color:var(--body);max-width:50ch}
+  .cta{display:flex;gap:13px;margin-top:30px;flex-wrap:wrap}
+  .btn{font-family:'Inter',sans-serif;font-weight:600;font-size:15px;padding:13px 24px;border-radius:9px;border:none;cursor:pointer;transition:transform .12s ease}
+  .btn:active{transform:translateY(1px)}
+  .btn-primary{background:var(--lime);color:var(--btn-text)}
+  .btn-ghost{background:transparent;border:1.5px solid var(--violet);color:var(--violet-ink)}
+  .btn:focus-visible{outline:3px solid var(--violet);outline-offset:2px}
+  .pillarsnote{margin-top:26px;font-size:13px;color:var(--muted);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .pillarsnote b{color:var(--body);font-weight:600}
+
+  /* gauge card */
+  .card{
+    background:var(--panel);border:1px solid var(--panel-line);border-radius:18px;
+    padding:clamp(22px,3vw,30px);box-shadow:0 24px 60px -28px rgba(76,40,160,.45);
+  }
+  .card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+  .card-top .t{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+  .card-top .live{display:inline-flex;align-items:center;gap:6px;font-family:'Space Mono',monospace;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--violet-ink)}
+  .card-top .live .blink{width:7px;height:7px;border-radius:50%;background:var(--lime);animation:blink 1.6s ease-in-out infinite}
+  @keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+  @media(prefers-reduced-motion:reduce){.card-top .live .blink{animation:none}}
+
+  .gauge{position:relative;width:100%;max-width:300px;margin:6px auto 0}
+  .gauge svg{width:100%;display:block;overflow:visible}
+  .gtrack{fill:none;stroke:var(--track);stroke-width:16;stroke-linecap:round}
+  .gfill{fill:none;stroke:url(#pg);stroke-width:16;stroke-linecap:round;transition:stroke-dasharray .7s cubic-bezier(.16,1,.3,1)}
+  .gmark{transition:cx .7s cubic-bezier(.16,1,.3,1),cy .7s cubic-bezier(.16,1,.3,1)}
+  .readout{position:absolute;left:0;right:0;bottom:6px;text-align:center}
+  .readout .pct{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:46px;line-height:1;color:var(--headline);letter-spacing:-.02em}
+  .readout .state{margin-top:6px;font-family:'Space Mono',monospace;font-size:12.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--violet-ink)}
+  .readout .state.ready{color:#5a8a0a}
+  .page[data-surface="dark"] .readout .state.ready{color:var(--lime)}
+
+  .steps{margin-top:22px;display:flex;flex-direction:column;gap:9px}
+  .step{display:flex;align-items:center;gap:12px;width:100%;text-align:left;cursor:pointer;
+    background:transparent;border:1.5px solid var(--panel-line);border-radius:11px;padding:12px 14px;transition:border-color .2s,background-color .2s}
+  .step:hover{border-color:var(--violet)}
+  .step .tick{width:22px;height:22px;border-radius:50%;border:2px solid var(--track);flex:none;display:flex;align-items:center;justify-content:center;transition:all .2s}
+  .step .tick svg{width:12px;height:12px;opacity:0;transform:scale(.5);transition:all .2s}
+  .step .txt{font-size:14.5px;font-weight:600;color:var(--headline)}
+  .step .sup{font-size:12px;color:var(--muted);font-weight:400}
+  .step[aria-pressed="true"]{border-color:var(--lime);background:rgba(201,242,78,.08)}
+  .page[data-surface="light"] .step[aria-pressed="true"]{background:rgba(201,242,78,.16)}
+  .step[aria-pressed="true"] .tick{background:var(--lime);border-color:var(--lime)}
+  .step[aria-pressed="true"] .tick svg{opacity:1;transform:scale(1)}
+  .step:focus-visible{outline:3px solid var(--violet);outline-offset:2px}
+  .hint{margin-top:14px;text-align:center;font-size:12.5px;color:var(--muted)}
+
+  .footnote{max-width:1120px;margin:0 auto;padding:6px clamp(16px,4vw,40px);font-size:12px;color:var(--muted);font-family:'Space Mono',monospace;letter-spacing:.03em}
+</style>
+</head>
+<body>
+
+  <div class="switcher">
+    <span class="lbl">Preview surface</span>
+    <div class="seg" role="group" aria-label="Preview surface">
+      <button id="btn-dark" aria-pressed="true">Dark</button>
+      <button id="btn-light" aria-pressed="false">Light</button>
+    </div>
+  </div>
+
+  <div class="page" data-surface="dark" id="page">
+
+    <div class="alert">
+      <span class="badge">⚠ Warning</span>
+      <span>Severe Thunderstorm Warning</span>
+      <span class="where">· Roanoke, VA — until 8:15 PM</span>
+      <a href="#">What to do now →</a>
+    </div>
+
+    <nav class="nav">
+      <div class="brand">
+        <svg viewBox="0 0 32 32" fill="none" aria-hidden="true"><path d="M3 23a13 13 0 0 1 26 0" stroke="#6D4AFF" stroke-width="3.4" stroke-linecap="round"/><circle cx="16" cy="23" r="2.8" fill="#C9F24E"/><path d="M16 23 23 14" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" style="color:var(--headline)"/></svg>
+        <span class="name">Paratus</span>
+      </div>
+      <div class="links">
+        <a href="#">How it works</a>
+        <a href="#">Your plan</a>
+        <a href="#">Alerts</a>
+        <a href="#">About</a>
+      </div>
+      <button class="navcta">Check readiness</button>
+    </nav>
+
+    <main class="hero">
+      <div class="hero-copy">
+        <span class="eyebrow"><span class="pip"></span>Semper Paratus · Always Ready</span>
+        <h1>You're less ready than you think.</h1>
+        <p class="sub">Paratus turns “I should really get prepared” into a plan you actually finish — one piece at a time. See exactly where you stand in three minutes.</p>
+        <div class="cta">
+          <button class="btn btn-primary">Check my readiness</button>
+          <button class="btn btn-ghost">See what's at risk</button>
+        </div>
+        <p class="pillarsnote"><b>The three that matter most:</b> get the alert · build the kit · make the plan</p>
+      </div>
+
+      <div class="hero-demo">
+        <div class="card">
+          <div class="card-top">
+            <span class="t">Your readiness</span>
+            <span class="live"><span class="blink"></span>Live</span>
+          </div>
+          <div class="gauge">
+            <svg viewBox="0 0 260 150" role="img" aria-label="Readiness gauge">
+              <defs>
+                <linearGradient id="pg" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0" stop-color="#6D4AFF"/>
+                  <stop offset="1" stop-color="#C9F24E"/>
+                </linearGradient>
+              </defs>
+              <path class="gtrack" d="M26 130 A104 104 0 0 1 234 130"/>
+              <path class="gfill" id="gfill" pathLength="100" d="M26 130 A104 104 0 0 1 234 130" stroke-dasharray="0 100"/>
+              <circle class="gmark" id="gmark" cx="26" cy="130" r="7" fill="#fff" stroke="#6D4AFF" stroke-width="3"/>
+            </svg>
+            <div class="readout">
+              <div class="pct" id="pct">0%</div>
+              <div class="state" id="state">Exposed</div>
+            </div>
+          </div>
+
+          <div class="steps">
+            <button class="step" data-step aria-pressed="false">
+              <span class="tick"><svg viewBox="0 0 14 14" fill="none"><path d="M2 7.5 5.5 11 12 3.5" stroke="#16161C" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              <span class="txt">Get the alert <span class="sup">— sign up for warnings</span></span>
+            </button>
+            <button class="step" data-step aria-pressed="false">
+              <span class="tick"><svg viewBox="0 0 14 14" fill="none"><path d="M2 7.5 5.5 11 12 3.5" stroke="#16161C" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              <span class="txt">Build the kit <span class="sup">— water, food, power, meds</span></span>
+            </button>
+            <button class="step" data-step aria-pressed="false">
+              <span class="tick"><svg viewBox="0 0 14 14" fill="none"><path d="M2 7.5 5.5 11 12 3.5" stroke="#16161C" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              <span class="txt">Make the plan <span class="sup">— where to go, who to call</span></span>
+            </button>
+          </div>
+          <p class="hint">Tap each step to watch your score climb.</p>
+        </div>
+      </div>
+    </main>
+
+    <p class="footnote">// Same hero, two surfaces — flip the toggle up top. Lime = action only on light; violet carries the voice.</p>
+  </div>
+
+<script>
+  // ---- surface toggle ----
+  const page=document.getElementById('page');
+  const bD=document.getElementById('btn-dark');
+  const bL=document.getElementById('btn-light');
+  function setSurface(s){
+    page.dataset.surface=s;
+    bD.setAttribute('aria-pressed',s==='dark');
+    bL.setAttribute('aria-pressed',s==='light');
+  }
+  bD.addEventListener('click',()=>setSurface('dark'));
+  bL.addEventListener('click',()=>setSurface('light'));
+
+  // ---- gauge ----
+  const steps=[...document.querySelectorAll('[data-step]')];
+  const fill=document.getElementById('gfill');
+  const mark=document.getElementById('gmark');
+  const pctEl=document.getElementById('pct');
+  const stateEl=document.getElementById('state');
+  const scoreMap=[0,35,70,100];
+  const stateMap=['Exposed','Getting started','Underway','Ready'];
+  const cx=130,cy=130,r=104;
+  const reduce=window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+  let shownPct=0;
+
+  function markPos(pct){
+    const a=Math.PI*(1-pct/100);
+    return {x:cx+r*Math.cos(a),y:cy-r*Math.sin(a)};
+  }
+  function tween(from,to){
+    if(reduce){pctEl.textContent=to+'%';return;}
+    const start=performance.now(),dur=600;
+    function frame(t){
+      const k=Math.min(1,(t-start)/dur);
+      const e=1-Math.pow(1-k,3);
+      pctEl.textContent=Math.round(from+(to-from)*e)+'%';
+      if(k<1)requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  }
+  function update(){
+    const count=steps.filter(s=>s.getAttribute('aria-pressed')==='true').length;
+    const pct=scoreMap[count];
+    fill.setAttribute('stroke-dasharray',pct+' 100');
+    const p=markPos(pct);
+    mark.setAttribute('cx',p.x.toFixed(1));
+    mark.setAttribute('cy',p.y.toFixed(1));
+    mark.setAttribute('stroke',count===3?'#C9F24E':'#6D4AFF');
+    tween(shownPct,pct);shownPct=pct;
+    stateEl.textContent=stateMap[count];
+    stateEl.classList.toggle('ready',count===3);
+  }
+  steps.forEach(s=>s.addEventListener('click',()=>{
+    s.setAttribute('aria-pressed',s.getAttribute('aria-pressed')==='true'?'false':'true');
+    update();
+  }));
+</script>
+</body>
+</html>
