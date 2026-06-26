@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/svg+xml" href="paratus-favicon.svg">
+<link rel="apple-touch-icon" href="paratus-app-icon.svg">
+<title>Paratus · Practical disaster prep</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F8F7FC;--panel:#FFFFFF;--line:#ECEAF6;--line-2:#E2DFF0;
+    --ink:#16161C;--body:#56565F;--muted:#8A8A95;
+    --violet:#6D4AFF;--violet-ink:#5128D6;--violet-soft:#F0ECFF;
+    --lime:#C9F24E;--gray:#4A4A4A;--carbon:#16161C;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+  body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--body);line-height:1.6}
+  .wrap{max-width:1140px;margin:0 auto;padding:0 clamp(16px,4vw,40px)}
+  h1,h2,h3{font-family:'Space Grotesk',sans-serif;color:var(--ink);letter-spacing:-.02em;line-height:1.06}
+  .eyebrow{font-family:'Space Mono',monospace;font-size:11.5px;letter-spacing:.15em;text-transform:uppercase;color:var(--violet-ink)}
+  a{color:inherit}
+
+  .btn{font-family:'Inter',sans-serif;font-weight:600;font-size:15px;padding:13px 24px;border-radius:9px;border:none;cursor:pointer;text-decoration:none;display:inline-block;transition:transform .12s ease,box-shadow .2s ease}
+  .btn-primary{background:var(--lime);color:var(--carbon);box-shadow:0 6px 20px -8px rgba(109,74,255,.5)}
+  .btn-primary:hover{transform:translateY(-1px);box-shadow:0 10px 26px -8px rgba(109,74,255,.55)}
+  .btn:active{transform:translateY(1px)}
+  .btn:focus-visible{outline:3px solid var(--violet);outline-offset:2px}
+  .microcta{margin-top:10px;font-family:'Space Mono',monospace;font-size:11.5px;letter-spacing:.04em;color:var(--muted)}
+  .microcta b{color:var(--body);font-weight:700}
+  .textlink{display:inline-block;margin-top:16px;font-size:14px;font-weight:600;color:var(--violet-ink);text-decoration:none}
+  .textlink:hover{text-decoration:underline}
+
+  .alertbar{background:var(--violet-soft);border-bottom:1px solid var(--line)}
+  .alertbar .inner{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:9px 0;font-size:13px;color:var(--ink)}
+  .alertbar .badge{font-family:'Space Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;background:var(--lime);color:var(--carbon);padding:3px 8px;border-radius:4px}
+  .alertbar .where{color:var(--body)}
+  .alertbar a{margin-left:auto;color:var(--violet-ink);font-weight:600;text-decoration:none;white-space:nowrap}
+  .alertbar a:hover{text-decoration:underline}
+
+  .nav{position:sticky;top:0;z-index:40;background:rgba(248,247,252,.85);backdrop-filter:saturate(180%) blur(12px);border-bottom:1px solid var(--line)}
+  .nav .inner{display:flex;align-items:center;gap:14px;padding:15px 0}
+  .brand{display:flex;align-items:center;gap:10px;text-decoration:none}
+  .brand svg{width:30px;height:30px;flex:none}
+  .brand .nm{display:flex;flex-direction:column;line-height:1}
+  .brand .name{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:19px;color:var(--ink);letter-spacing:-.01em}
+  .brand .desc{font-size:10.5px;color:var(--muted);margin-top:3px;letter-spacing:.01em}
+  .links{margin-left:auto;display:flex;gap:28px}
+  .links a{font-size:14.5px;color:var(--body);text-decoration:none}
+  .links a:hover{color:var(--ink)}
+  .nav .navcta{font-size:14px;padding:9px 18px}
+  .burger{display:none;margin-left:auto;background:transparent;border:1px solid var(--line-2);border-radius:8px;padding:8px;cursor:pointer}
+  .burger svg{width:20px;height:20px;display:block}
+  .mobilemenu{display:none;flex-direction:column;gap:2px;padding:8px 0 16px;border-bottom:1px solid var(--line)}
+  .mobilemenu a{padding:12px clamp(16px,4vw,40px);font-size:15.5px;color:var(--ink);text-decoration:none}
+  .mobilemenu a:hover{background:var(--violet-soft)}
+  .mobilemenu .btn{margin:10px clamp(16px,4vw,40px) 0;text-align:center}
+  @media(max-width:840px){
+    .links,.nav .navcta{display:none}
+    .burger{display:block}
+    .mobilemenu.open{display:flex}
+  }
+
+  .hero{padding:clamp(40px,6vw,76px) 0 clamp(48px,6vw,80px)}
+  .hero .grid{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(32px,5vw,68px);align-items:center}
+  @media(max-width:900px){.hero .grid{grid-template-columns:1fr;gap:40px}}
+  .hero .eyebrow{display:inline-block;margin-bottom:18px}
+  .hero h1{font-size:clamp(36px,6.6vw,62px);max-width:13ch}
+  .hero .sub{margin-top:20px;font-size:clamp(16px,2.2vw,18.5px);max-width:52ch;color:var(--body)}
+  .hero .sub b{color:var(--ink);font-weight:600}
+  .hero .cta-row{margin-top:30px}
+  .trustrow{margin-top:34px;display:flex;flex-wrap:wrap;gap:18px;padding-top:22px;border-top:1px solid var(--line)}
+  .trustrow .ti{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--body);font-weight:500}
+  .trustrow .ti .d{width:7px;height:7px;border-radius:50%;background:var(--lime);box-shadow:0 0 0 3px rgba(109,74,255,.12)}
+
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:clamp(22px,3vw,30px);box-shadow:0 30px 70px -34px rgba(81,40,214,.4)}
+  .card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
+  .card-top .t{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+  .card-top .ct{font-family:'Space Mono',monospace;font-size:11px;font-weight:700;color:var(--violet-ink)}
+  .gauge{position:relative;width:100%;max-width:300px;margin:4px auto 0}
+  .gauge svg{width:100%;display:block;overflow:visible}
+  .gtrack{fill:none;stroke:var(--line);stroke-width:16;stroke-linecap:round}
+  .gfill{fill:none;stroke:url(#pg);stroke-width:16;stroke-linecap:round;transition:stroke-dasharray .7s cubic-bezier(.16,1,.3,1)}
+  .gmark{transition:cx .7s cubic-bezier(.16,1,.3,1),cy .7s cubic-bezier(.16,1,.3,1)}
+  .readout{position:absolute;left:0;right:0;bottom:4px;text-align:center}
+  .readout .pct{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:46px;line-height:1;color:var(--ink);letter-spacing:-.02em}
+  .readout .state{margin-top:6px;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--violet-ink)}
+  .readout .state.ready{color:#4f7a07}
+  .steps{margin-top:20px;display:flex;flex-direction:column;gap:9px}
+  .step{display:flex;align-items:center;gap:12px;width:100%;text-align:left;cursor:pointer;background:transparent;border:1.5px solid var(--line-2);border-radius:11px;padding:12px 14px;transition:border-color .2s,background-color .2s}
+  .step:hover{border-color:var(--violet)}
+  .step .tick{width:22px;height:22px;border-radius:50%;border:2px solid var(--line-2);flex:none;display:flex;align-items:center;justify-content:center;transition:all .2s}
+  .step .tick svg{width:12px;height:12px;opacity:0;transform:scale(.5);transition:all .2s}
+  .step .txt{font-size:14.5px;font-weight:600;color:var(--ink)}
+  .step .sup{font-size:12px;color:var(--muted);font-weight:400}
+  .step[aria-pressed="true"]{border-color:var(--lime);background:rgba(201,242,78,.16)}
+  .step[aria-pressed="true"] .tick{background:var(--lime);border-color:var(--lime)}
+  .step[aria-pressed="true"] .tick svg{opacity:1;transform:scale(1)}
+  .step:focus-visible{outline:3px solid var(--violet);outline-offset:2px}
+  .hint{margin-top:14px;text-align:center;font-size:12.5px;color:var(--muted)}
+  .cardcta{margin-top:16px;padding:16px;border-radius:13px;background:var(--carbon);text-align:center;display:none}
+  .cardcta.show{display:block;animation:pop .4s cubic-bezier(.16,1,.3,1) both}
+  @keyframes pop{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+  .cardcta p{color:#D9D9E0;font-size:13.5px;margin-bottom:12px}
+  .cardcta p b{color:#fff}
+  @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+  .section{padding:clamp(48px,7vw,92px) 0}
+  .section.tint{background:linear-gradient(180deg,#fff,#FAF9FE)}
+  .sec-head{max-width:62ch}
+  .sec-head .eyebrow{display:inline-block;margin-bottom:14px}
+  .sec-head h2{font-size:clamp(26px,4.4vw,40px);max-width:18ch}
+  .sec-head .lead{margin-top:16px;font-size:clamp(15px,2vw,18px);color:var(--body);max-width:54ch}
+
+  .vs{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:40px}
+  @media(max-width:720px){.vs{grid-template-columns:1fr}}
+  .vscard{border-radius:16px;padding:clamp(22px,3vw,30px);border:1px solid var(--line)}
+  .vscard.old{background:#fff}
+  .vscard.new{background:var(--carbon);border-color:var(--carbon)}
+  .vscard .lab{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;margin-bottom:18px}
+  .vscard.old .lab{color:var(--muted)}
+  .vscard.new .lab{color:var(--lime)}
+  .vscard ul{list-style:none;display:flex;flex-direction:column;gap:15px}
+  .vscard li{display:flex;gap:12px;font-size:15px;line-height:1.45}
+  .vscard.old li{color:var(--body)}
+  .vscard.new li{color:#E2E2E8}
+  .vscard .ic{width:22px;height:22px;flex:none;border-radius:50%;display:flex;align-items:center;justify-content:center;margin-top:1px}
+  .vscard.old .ic{background:#F1EFF7}
+  .vscard.new .ic{background:rgba(201,242,78,.16)}
+  .vscard .ic svg{width:12px;height:12px}
+
+  .cards3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:42px}
+  @media(max-width:820px){.cards3{grid-template-columns:1fr}}
+  .howcard{background:#fff;border:1px solid var(--line);border-radius:16px;padding:clamp(22px,3vw,28px)}
+  .howcard .icn{width:46px;height:46px;border-radius:12px;background:var(--violet-soft);display:flex;align-items:center;justify-content:center;margin-bottom:18px}
+  .howcard .icn svg{width:24px;height:24px}
+  .howcard .num{font-family:'Space Mono',monospace;font-size:11px;color:var(--violet-ink);letter-spacing:.1em;margin-bottom:6px}
+  .howcard h3{font-size:20px;margin-bottom:9px}
+  .howcard p{font-size:14.5px;color:var(--body)}
+
+  .riskchips{display:flex;flex-wrap:wrap;gap:10px;margin-top:28px}
+  .riskchips span{font-size:13.5px;font-weight:500;color:var(--ink);background:#fff;border:1px solid var(--line-2);border-radius:30px;padding:9px 16px}
+
+  .trustsec{background:var(--violet-soft)}
+  .trustsec .vals{display:flex;flex-wrap:wrap;gap:14px;margin-top:30px}
+  .trustsec .val{display:flex;align-items:center;gap:10px;background:#fff;border:1px solid var(--line-2);border-radius:12px;padding:14px 18px;font-size:14.5px;font-weight:600;color:var(--ink)}
+  .trustsec .val svg{width:20px;height:20px;flex:none}
+
+  .band{background:var(--carbon);background-image:radial-gradient(800px 360px at 80% 0%,rgba(109,74,255,.3),transparent 62%);text-align:center}
+  .band .inner{padding:clamp(56px,8vw,104px) 0}
+  .band .eyebrow{color:#9b86ff}
+  .band h2{color:#fff;font-size:clamp(28px,5vw,48px);max-width:20ch;margin:14px auto 0}
+  .band p{color:#B9B9C4;font-size:clamp(15px,2vw,18px);margin:18px auto 0;max-width:46ch}
+  .band .cta-row{margin-top:30px}
+  .band .microcta{color:#7E7E8B}
+  .band .microcta b{color:#cfcfd6}
+
+  footer{background:var(--carbon);color:#9A9AA6;border-top:1px solid #24242C}
+  footer .inner{padding:clamp(40px,5vw,64px) 0 36px;display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:32px}
+  @media(max-width:720px){footer .inner{grid-template-columns:1fr 1fr}}
+  footer .fbrand .name{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:20px;color:#fff;display:flex;align-items:center;gap:9px}
+  footer .fbrand .name svg{width:26px;height:26px}
+  footer .fbrand .motto{font-family:'Space Mono',monospace;font-size:12px;color:#6E6E7A;margin-top:12px;letter-spacing:.04em}
+  footer .fbrand .priv{font-size:13px;color:#8A8A96;margin-top:16px;max-width:34ch;line-height:1.5}
+  footer .fcol h4{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#6E6E7A;margin-bottom:14px}
+  footer .fcol a{display:block;font-size:14px;color:#B4B4BF;text-decoration:none;margin-bottom:11px}
+  footer .fcol a:hover{color:#fff}
+  footer .legal{border-top:1px solid #24242C;padding:18px 0;font-size:12px;color:#62626E;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
+  footer .legal .cap{font-family:'Space Mono',monospace;letter-spacing:.04em}
+</style>
+</head>
+<body>
+
+  <div class="alertbar"><div class="wrap"><div class="inner">
+    <span class="badge">⚠ Warning</span>
+    <span>Severe Thunderstorm Warning</span>
+    <span class="where">· Roanoke, VA, until 8:15 PM</span>
+    <a href="#">What to do now →</a>
+  </div></div></div>
+
+  <div class="nav">
+    <div class="wrap"><div class="inner">
+      <a class="brand" href="index.html">
+        <svg viewBox="0 0 32 32" fill="none" aria-hidden="true"><defs><linearGradient id="pgN" x1="0" x2="1" y1="0" y2="0"><stop offset="0" stop-color="#6D4AFF"/><stop offset="1" stop-color="#C9F24E"/></linearGradient></defs><path d="M3 23a13 13 0 0 1 26 0" stroke="url(#pgN)" stroke-width="3.4" stroke-linecap="round"/><path d="M16 23 23 14" stroke="#16161C" stroke-width="2.6" stroke-linecap="round"/><circle cx="16" cy="23" r="2.8" fill="#C9F24E"/></svg>
+        <span class="nm"><span class="name">Paratus</span><span class="desc">Practical disaster prep</span></span>
+      </a>
+      <nav class="links">
+        <a href="how-it-works.html" data-nav="how">How it works</a>
+        <a href="prepare.html" data-nav="prepare">What to prepare for</a>
+        <a href="alerts.html" data-nav="alerts">Alerts</a>
+        <a href="about.html" data-nav="about">About</a>
+      </nav>
+      <a class="btn btn-primary navcta" href="#">Check my readiness</a>
+      <button class="burger" id="burger" aria-label="Menu" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="#16161C" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+    </div></div>
+    <div class="mobilemenu" id="mobilemenu">
+      <a href="how-it-works.html" data-nav="how">How it works</a>
+      <a href="prepare.html" data-nav="prepare">What to prepare for</a>
+      <a href="alerts.html" data-nav="alerts">Alerts</a>
+      <a href="about.html" data-nav="about">About</a>
+      <a class="btn btn-primary" href="#">Check my readiness</a>
+    </div>
+  </div>
+
+  <header class="hero"><div class="wrap"><div class="grid">
+    <div class="hero-copy">
+      <span class="eyebrow">For everyone who keeps meaning to get to it</span>
+      <h1>You're probably not as ready as you think.</h1>
+      <p class="sub">Nobody likes thinking about this stuff, so most people put it off, and then a storm hits and they're scrambling. Paratus keeps it simple: <b>a few steps that actually matter for where you live</b>, done one at a time. Give it three minutes and you'll know where you stand.</p>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="#">Check my readiness</a>
+        <div class="microcta"><b>Free</b> · No account · About 3 minutes</div>
+        <a class="textlink" href="prepare.html">first, see what you'd actually be up against →</a>
+      </div>
+      <div class="trustrow">
+        <span class="ti"><span class="d"></span>Always free</span>
+        <span class="ti"><span class="d"></span>Your data stays yours</span>
+        <span class="ti"><span class="d"></span>Built by emergency managers</span>
+      </div>
+    </div>
+
+    <div class="hero-demo">
+      <div class="card">
+        <div class="card-top"><span class="t">Your readiness</span><span class="ct" id="counter">0 of 3 steps</span></div>
+        <div class="gauge">
+          <svg viewBox="0 0 260 150" role="img" aria-label="Readiness gauge">
+            <defs><linearGradient id="pg" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#6D4AFF"/><stop offset="1" stop-color="#C9F24E"/></linearGradient></defs>
+            <path class="gtrack" d="M26 130 A104 104 0 0 1 234 130"/>
+            <path class="gfill" id="gfill" pathLength="100" d="M26 130 A104 104 0 0 1 234 130" stroke-dasharray="0 100"/>
+            <circle class="gmark" id="gmark" cx="26" cy="130" r="7" fill="#fff" stroke="#6D4AFF" stroke-width="3"/>
+          </svg>
+          <div class="readout"><div class="pct" id="pct">0%</div><div class="state" id="state">Not ready</div></div>
+        </div>
+        <div class="steps">
+          <button class="step" data-step aria-pressed="false">
+            <span class="tick"><svg viewBox="0 0 14 14" fill="none"><path d="M2 7.5 5.5 11 12 3.5" stroke="#16161C" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <span class="txt">Get the alert <span class="sup">(warnings for your location)</span></span>
+          </button>
+          <button class="step" data-step aria-pressed="false">
+            <span class="tick"><svg viewBox="0 0 14 14" fill="none"><path d="M2 7.5 5.5 11 12 3.5" stroke="#16161C" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <span class="txt">Build the kit <span class="sup">(water, power, meds, documents)</span></span>
+          </button>
+          <button class="step" data-step aria-pressed="false">
+            <span class="tick"><svg viewBox="0 0 14 14" fill="none"><path d="M2 7.5 5.5 11 12 3.5" stroke="#16161C" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <span class="txt">Make the plan <span class="sup">(where to go, who to call)</span></span>
+          </button>
+        </div>
+        <p class="hint" id="hint">Go ahead, tap each step.</p>
+        <div class="cardcta" id="cardcta">
+          <p>See? Not bad. <b>You're already moving.</b> The real thing has a few more steps, but that's the gist. Small stuff, knocked out one at a time.</p>
+          <a class="btn btn-primary" href="#" style="width:100%">Start my plan</a>
+        </div>
+      </div>
+    </div>
+  </div></div></header>
+
+  <section class="section tint" id="why">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="eyebrow">Why most people never actually do it</span>
+        <h2>The problem isn't you. It's the advice.</h2>
+        <p class="lead">Go looking for how to prepare and you'll get a 50-item checklist that treats a wildfire and a blizzard exactly the same. It's a lot. Most people skim it, feel behind, and close the tab. We wanted to do this differently.</p>
+      </div>
+      <div class="vs">
+        <div class="vscard old">
+          <div class="lab">The usual way</div>
+          <ul>
+            <li><span class="ic"><svg viewBox="0 0 14 14" fill="none"><path d="M3.5 3.5l7 7M10.5 3.5l-7 7" stroke="#9A9AA6" stroke-width="2" stroke-linecap="round"/></svg></span>One giant checklist, same for everybody</li>
+            <li><span class="ic"><svg viewBox="0 0 14 14" fill="none"><path d="M3.5 3.5l7 7M10.5 3.5l-7 7" stroke="#9A9AA6" stroke-width="2" stroke-linecap="round"/></svg></span>No real way to know if you've done enough</li>
+            <li><span class="ic"><svg viewBox="0 0 14 14" fill="none"><path d="M3.5 3.5l7 7M10.5 3.5l-7 7" stroke="#9A9AA6" stroke-width="2" stroke-linecap="round"/></svg></span>Easy to start, even easier to forget</li>
+          </ul>
+        </div>
+        <div class="vscard new">
+          <div class="lab">With Paratus</div>
+          <ul>
+            <li><span class="ic"><svg viewBox="0 0 14 14" fill="none"><path d="M2 7.5 5.5 11 12 3.5" stroke="#C9F24E" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Just the parts that matter where you live</li>
+            <li><span class="ic"><svg viewBox="0 0 14 14" fill="none"><path d="M2 7.5 5.5 11 12 3.5" stroke="#C9F24E" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>A score that climbs as you go</li>
+            <li><span class="ic"><svg viewBox="0 0 14 14" fill="none"><path d="M2 7.5 5.5 11 12 3.5" stroke="#C9F24E" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Small enough that you actually finish</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="how">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="eyebrow">How it works</span>
+        <h2>It really comes down to three things.</h2>
+        <p class="lead">You don't have to do it all in one sitting. Pick one, get it done, come back for the next. Paratus keeps track of where you left off.</p>
+      </div>
+      <div class="cards3">
+        <div class="howcard">
+          <div class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="#6D4AFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg></div>
+          <div class="num">STEP 01</div>
+          <h3>Get the alert</h3>
+          <p>Warnings for your actual address, so you're not finding out from a neighbor's text after it's already coming down.</p>
+        </div>
+        <div class="howcard">
+          <div class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="#6D4AFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8 12 3 3 8l9 5 9-5Z"/><path d="M3 8v8l9 5 9-5V8"/><path d="m12 13 0 8"/></svg></div>
+          <div class="num">STEP 02</div>
+          <h3>Build the kit</h3>
+          <p>Water, power, medications, the papers you'd hate to lose. We'll tell you what's worth having for what actually happens where you live, not a garage full of gear you'll never touch.</p>
+        </div>
+        <div class="howcard">
+          <div class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="#6D4AFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3 4 5v16l5-2 6 2 5-2V3l-5 2-6-2Z"/><path d="M9 3v16M15 5v16"/></svg></div>
+          <div class="num">STEP 03</div>
+          <h3>Make the plan</h3>
+          <p>Where you'd go, who you'd call, what you'd grab on the way out. Much easier to sort out now, while things are calm, than in the middle of it.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section tint" id="risk">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="eyebrow" id="alerts">What to prepare for</span>
+        <h2>Prepping for a hurricane won't help much in an ice storm.</h2>
+        <p class="lead">Flooding here, ice storms there, wildfire a few states over. Tell us where you are and we'll start with what's actually likely to happen to you, not a list built for someone two time zones away.</p>
+        <div class="riskchips">
+          <span>Flooding</span><span>Ice &amp; winter storms</span><span>Hurricanes</span><span>Tornadoes</span><span>Wildfire</span><span>Extended power outages</span><span>Extreme heat</span>
+        </div>
+        <a class="textlink" href="#" style="margin-top:26px">See what's likely where you live →</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section trustsec" id="about">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="eyebrow">Who's behind it</span>
+        <h2>Built by people who do this for a living.</h2>
+        <p class="lead">We're emergency managers. Disaster recovery is the day job. Mostly that means showing up after the worst has already happened and seeing who was ready and who wasn't. After enough of that, you really start wishing folks had a plan beforehand. So we made one that's easy to follow.</p>
+      </div>
+      <div class="vals">
+        <div class="val"><svg viewBox="0 0 24 24" fill="none" stroke="#6D4AFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 6v6c0 5 3.5 8 8 10 4.5-2 8-5 8-10V6l-8-4Z"/></svg>We don't sell your data, run ads, any of that</div>
+        <div class="val"><svg viewBox="0 0 24 24" fill="none" stroke="#6D4AFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1v22M5 8h9a3 3 0 0 1 0 6H7"/></svg>Free, and staying that way</div>
+        <div class="val"><svg viewBox="0 0 24 24" fill="none" stroke="#6D4AFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>No doom and gloom, just what helps</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band"><div class="wrap"><div class="inner">
+    <span class="eyebrow">Semper Paratus, always ready</span>
+    <h2>You already know you should do this.</h2>
+    <p>So take a few minutes and get it started. Worst case, you find out you're in better shape than you thought.</p>
+    <div class="cta-row">
+      <a class="btn btn-primary" href="#">Check my readiness</a>
+      <div class="microcta"><b>Free</b> · No account · About 3 minutes</div>
+    </div>
+  </div></div></section>
+
+  <footer>
+    <div class="wrap">
+      <div class="inner">
+        <div class="fbrand">
+          <span class="name"><svg viewBox="0 0 32 32" fill="none" aria-hidden="true"><defs><linearGradient id="pgF" x1="0" x2="1" y1="0" y2="0"><stop offset="0" stop-color="#6D4AFF"/><stop offset="1" stop-color="#C9F24E"/></linearGradient></defs><path d="M3 23a13 13 0 0 1 26 0" stroke="url(#pgF)" stroke-width="3.4" stroke-linecap="round"/><path d="M16 23 23 14" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/><circle cx="16" cy="23" r="2.8" fill="#C9F24E"/></svg>Paratus</span>
+          <div class="motto">// Semper Paratus, always ready</div>
+          <div class="priv">Paratus is free and ad-free. We don't sell your data. Ever.</div>
+        </div>
+        <div class="fcol">
+          <h4>Prepare</h4>
+          <a href="alerts.html">Get the alert</a>
+          <a href="how-it-works.html">Build the kit</a>
+          <a href="how-it-works.html">Make the plan</a>
+          <a href="prepare.html">What's at risk near you</a>
+        </div>
+        <div class="fcol">
+          <h4>About</h4>
+          <a href="about.html">Our mission</a>
+          <a href="about.html">Privacy</a>
+          <a href="about.html">Contact</a>
+        </div>
+      </div>
+      <div class="legal">
+        <span>© 2026 Paratus</span>
+        <span class="cap">A CompliAid project · People over profits</span>
+      </div>
+    </div>
+  </footer>
+
+<script>
+  const burger=document.getElementById('burger');
+  const menu=document.getElementById('mobilemenu');
+  burger.addEventListener('click',()=>{
+    const open=menu.classList.toggle('open');
+    burger.setAttribute('aria-expanded',open);
+  });
+  menu.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{menu.classList.remove('open');burger.setAttribute('aria-expanded','false')}));
+
+  const steps=[...document.querySelectorAll('[data-step]')];
+  const fill=document.getElementById('gfill'),mark=document.getElementById('gmark');
+  const pctEl=document.getElementById('pct'),stateEl=document.getElementById('state');
+  const counter=document.getElementById('counter'),hint=document.getElementById('hint'),cardcta=document.getElementById('cardcta');
+  const scoreMap=[0,35,70,100],stateMap=['Not ready','Getting there','Almost there','Ready'];
+  const cx=130,cy=130,r=104;
+  const reduce=window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+  let shown=0;
+  const pos=p=>{const a=Math.PI*(1-p/100);return{x:cx+r*Math.cos(a),y:cy-r*Math.sin(a)}};
+  function tween(from,to){
+    if(reduce){pctEl.textContent=to+'%';return;}
+    const s=performance.now(),d=600;
+    (function f(t){const k=Math.min(1,(t-s)/d),e=1-Math.pow(1-k,3);pctEl.textContent=Math.round(from+(to-from)*e)+'%';if(k<1)requestAnimationFrame(f)})(s);
+  }
+  function update(){
+    const count=steps.filter(s=>s.getAttribute('aria-pressed')==='true').length;
+    const pct=scoreMap[count];
+    fill.setAttribute('stroke-dasharray',pct+' 100');
+    const p=pos(pct);mark.setAttribute('cx',p.x.toFixed(1));mark.setAttribute('cy',p.y.toFixed(1));
+    mark.setAttribute('stroke',count===3?'#C9F24E':'#6D4AFF');
+    tween(shown,pct);shown=pct;
+    stateEl.textContent=stateMap[count];stateEl.classList.toggle('ready',count===3);
+    counter.textContent=count+' of 3 steps';
+    if(count===3){cardcta.classList.add('show');hint.style.display='none';}
+    else{cardcta.classList.remove('show');hint.style.display='';}
+  }
+  steps.forEach(s=>s.addEventListener('click',()=>{s.setAttribute('aria-pressed',s.getAttribute('aria-pressed')==='true'?'false':'true');update();}));
+</script>
+</body>
+</html>

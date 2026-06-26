@@ -1,0 +1,11 @@
+<svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Paratus">
+  <defs>
+    <linearGradient id="paratusMark" x1="5" y1="30" x2="43" y2="30" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#6D4AFF"/>
+      <stop offset="1" stop-color="#C9F24E"/>
+    </linearGradient>
+  </defs>
+  <path d="M5 30 A19 19 0 0 1 43 30" stroke="url(#paratusMark)" stroke-width="5" stroke-linecap="round"/>
+  <path d="M24 30 L32 18" stroke="#16161C" stroke-width="4" stroke-linecap="round"/>
+  <circle cx="24" cy="30" r="3.4" fill="#C9F24E"/>
+</svg>
